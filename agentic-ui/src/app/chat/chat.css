@@ -1,0 +1,46 @@
+/* chat.component.css */
+
+.response-container {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.streaming-indicator {
+  text-align: right;
+}
+
+.alert {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+/* Animation pour le markdown pendant le streaming */
+markdown {
+  display: block;
+  animation: typing 0.5s steps(40, end);
+}
+
+@keyframes typing {
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Style du spinner */
+.spinner-grow-sm {
+  width: 0.75rem;
+  height: 0.75rem;
+}
