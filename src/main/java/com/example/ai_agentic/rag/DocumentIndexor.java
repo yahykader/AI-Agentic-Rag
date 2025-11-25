@@ -32,7 +32,7 @@ public class DocumentIndexor {
     @Bean
     public SimpleVectorStore getVectorStore(EmbeddingModel embeddingModel) {
         SimpleVectorStore vectorStore = SimpleVectorStore.builder(embeddingModel).build();
-        Path storePath = Path.of("ai-agentic", "src", "main", "resources", "store");
+        Path storePath = Path.of("src", "main", "resources", "store");
 
         try {
             if (!Files.exists(storePath, new LinkOption[0])) {
@@ -43,15 +43,18 @@ public class DocumentIndexor {
             File file = new File(storePath.toFile(), this.fileStore);
             log.info("\ud83d\udcc1 Chemin du VectorStore: {}", file.getAbsolutePath());
             if (!file.exists()) {
-                log.info("\ud83d\udcc4 Chargement et indexation du PDF...");
+                log.info("📄 Indexation initiale du PDF en cours...");
                 PagePdfDocumentReader pdfDocumentReader = new PagePdfDocumentReader(this.documentResource);
                 List<Document> documents = pdfDocumentReader.get();
-                log.info("\ud83d\udcd6 {} documents extraits du PDF", documents.size());
+                log.info("📖 {} pages extraites du PDF", documents.size());
                 TextSplitter textSplitter = new TokenTextSplitter();
                 List<Document> chunks = textSplitter.apply(documents);
                 log.info("✂️ {} chunks créés", chunks.size());
+                // Ajouter au vector store et générer les embeddings
+                log.info("🔄 Génération des embeddings...");
                 vectorStore.add(chunks);
-                log.info("\ud83d\udcbe Sauvegarde du VectorStore...");
+                // Sauvegarder
+                log.info("💾 Sauvegarde du VectorStore...");
                 vectorStore.save(file);
                 log.info("✅ VectorStore sauvegardé avec succès");
             } else {
