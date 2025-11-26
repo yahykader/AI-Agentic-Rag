@@ -3,23 +3,26 @@ package com.example.ai_agentic.controllers;
 
 import com.example.ai_agentic.agent.Agentic;
 import com.example.ai_agentic.rag.DocumentIndexor;
+import com.example.ai_agentic.rag.DocumentIndexorUpload;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 import java.io.IOException;
+
 @RestController
 @CrossOrigin({"*"})
 public class AgentController {
     private Agentic agentic;
-    private DocumentIndexor documentIndexor;
+    private DocumentIndexorUpload documentIndexorUpload;
 
-    public AgentController(Agentic agentic, DocumentIndexor documentIndexor) {
-        this.documentIndexor = documentIndexor;
+    public AgentController(Agentic agentic, DocumentIndexorUpload documentIndexorUpload) {
+        this.documentIndexorUpload = documentIndexorUpload;
         this.agentic = agentic;
     }
 
@@ -43,8 +46,8 @@ public class AgentController {
             value = {"/loadFile"},
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-    public void loadFile(@RequestParam("file") MultipartFile file) throws IOException {
-        this.documentIndexor.loadFile(file);
+    public void loadFile(@RequestPart("file") MultipartFile file) throws IOException {
+        this.documentIndexorUpload.loadFile(file);
     }
 }
 

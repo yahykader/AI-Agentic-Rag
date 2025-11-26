@@ -1,11 +1,5 @@
 package com.example.ai_agentic.rag;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-
 import lombok.Generated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,15 +10,19 @@ import org.springframework.ai.transformer.splitter.TextSplitter;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 
 @Component
-public class DocumentIndexor {
+public class DocumentIndexorUpload {
     @Generated
-    private static final Logger log = LoggerFactory.getLogger(DocumentIndexor.class);
+    private static final Logger log = LoggerFactory.getLogger(DocumentIndexorUpload.class);
 
     @Value("classpath:/pdfs/cv.pdf")
     private Resource documentResource;
@@ -32,15 +30,20 @@ public class DocumentIndexor {
     @Value("${vector.store.filename:store.json}")
     private String fileStore;
 
-    private final EmbeddingModel embeddingModel;
+    private final SimpleVectorStore vectorStore;
 
-    public DocumentIndexor(EmbeddingModel embeddingModel) {
-        this.embeddingModel = embeddingModel;
+
+    public DocumentIndexorUpload(SimpleVectorStore vectorStore) {
+        this.vectorStore = vectorStore;
     }
 
-  /*  @Bean
-    public SimpleVectorStore getVectorStore(EmbeddingModel embeddingModel) {
-        SimpleVectorStore vectorStore = SimpleVectorStore.builder(embeddingModel).build();
+
+    /**
+     * Méthode pour charger et indexer un fichier PDF
+     * @param pdfFile
+     * @throws IOException
+     */
+    public void loadFile(MultipartFile pdfFile) throws IOException {
         Path storePath = Path.of("src", "main", "resources", "store");
 
         try {
@@ -57,7 +60,7 @@ public class DocumentIndexor {
             if (!file.exists()) {
                 log.info("📄 Indexation initiale du PDF en cours...");
 
-                PagePdfDocumentReader pdfDocumentReader = new PagePdfDocumentReader(this.documentResource);
+                PagePdfDocumentReader pdfDocumentReader = new PagePdfDocumentReader(pdfFile.getResource());
                 List<Document> documents = pdfDocumentReader.get();
                 log.info("📖 {} pages extraites du PDF", documents.size());
 
@@ -79,10 +82,9 @@ public class DocumentIndexor {
                 log.info("✅ VectorStore chargé avec succès");
             }
 
-            return vectorStore;
         } catch (IOException e) {
             log.error("❌ Erreur lors de la création/chargement du VectorStore", e);
             throw new RuntimeException("Impossible de créer le VectorStore", e);
         }
-    }*/
+    }
 }

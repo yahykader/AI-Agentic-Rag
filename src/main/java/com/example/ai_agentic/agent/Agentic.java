@@ -17,7 +17,11 @@ public class Agentic {
     private ChatClient chatClient;
 
     public Agentic(ChatClient.Builder chatClient, ChatMemory chatMemory, AgentTools agentTools, SimpleVectorStore vectorStore) {
-        this.chatClient = chatClient.defaultAdvisors(new Advisor[]{new SimpleLoggerAdvisor(), MessageChatMemoryAdvisor.builder(chatMemory).build()}).defaultTools(new Object[]{agentTools}).defaultAdvisors(new Advisor[]{QuestionAnswerAdvisor.builder(vectorStore).build()}).build();
+        this.chatClient = chatClient.defaultAdvisors(
+                new SimpleLoggerAdvisor(),
+                MessageChatMemoryAdvisor.builder(chatMemory).build())
+            .defaultTools(agentTools)
+            .defaultAdvisors(QuestionAnswerAdvisor.builder(vectorStore).build()).build();
     }
 
     public String askLLM(String query) {
