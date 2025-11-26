@@ -21,7 +21,8 @@ public class Agentic {
                 new SimpleLoggerAdvisor(),
                 MessageChatMemoryAdvisor.builder(chatMemory).build())
             .defaultTools(agentTools)
-            .defaultAdvisors(QuestionAnswerAdvisor.builder(vectorStore).build()).build();
+            //.defaultAdvisors(QuestionAnswerAdvisor.builder(vectorStore).build())
+            .build();
     }
 
     public String askLLM(String query) {
